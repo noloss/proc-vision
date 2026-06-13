@@ -79,7 +79,7 @@ export default function Status() {
 
           <div style={{ backgroundColor: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '10px', padding: '14px 16px', marginBottom: '20px' }}>
             <p style={{ fontSize: '13px', color: '#92400E' }}>
-              SpAC will complete the review and send a savings estimate within 2 business days. We'll email <span style={{ fontWeight: 600 }}>otto@hartmann.de</span> when it's ready.
+              CaPS will review the numbers and deliver your savings calculation. We'll be in touch.
             </p>
           </div>
 
