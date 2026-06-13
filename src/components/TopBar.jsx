@@ -1,7 +1,7 @@
 export default function TopBar({ step }) {
   return (
     <div className="w-full flex items-center justify-between px-6 py-3" style={{ backgroundColor: '#1F2A44', minHeight: '52px' }}>
-      <span className="text-white font-bold text-lg tracking-tight">CaPS</span>
+      <span className="text-white font-bold text-lg tracking-tight">SpAC</span>
       <div className="text-right">
         <span className="text-white font-medium text-sm">Hartmann &amp; Co</span>
         {step && (

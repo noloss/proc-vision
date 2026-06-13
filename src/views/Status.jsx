@@ -33,7 +33,7 @@ export default function Status() {
             </div>
             <h1 className="text-2xl font-bold mb-2" style={{ color: '#1F2A44' }}>Your documents have been submitted</h1>
             <p className="text-gray-500 text-sm">
-              CaPS will complete the review and send a savings estimate within 2 business days.
+              SpAC will complete the review and send a savings estimate within 2 business days.
             </p>
             <p className="text-gray-500 text-sm">
               We'll email <span className="font-medium text-gray-700">otto@hartmann.de</span> when it's ready.

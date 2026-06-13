@@ -60,7 +60,7 @@ export default function Review() {
               className="w-full py-2.5 rounded-lg text-white font-semibold text-sm"
               style={{ backgroundColor: '#2FA37C' }}
             >
-              Submit to CaPS →
+              Submit to SpAC →
             </button>
           </div>
         </div>
@@ -126,7 +126,7 @@ function ReviewPanel({ item, index, total, onResolve }) {
     ? 'Extraction unclear — unit price may be wrong'
     : item.id === 3
     ? 'Low confidence match (72%) — please confirm'
-    : 'No CaPS equivalent found'
+    : 'No SpAC equivalent found'
 
   return (
     <div className="p-6 flex flex-col gap-6">
@@ -241,7 +241,7 @@ function MatchForm({ item, onResolve }) {
       </div>
 
       <div>
-        <label className="text-xs font-medium text-gray-500 block mb-1">CaPS match</label>
+        <label className="text-xs font-medium text-gray-500 block mb-1">SpAC match</label>
         <div className="relative">
           <button
             onClick={() => setDropdownOpen(o => !o)}
@@ -250,7 +250,7 @@ function MatchForm({ item, onResolve }) {
           >
             <div>
               <span className="font-medium" style={{ color: '#1F2A44' }}>{selected.name}</span>
-              <span className="ml-2 text-xs text-gray-500">€{selected.capsPrice} · {selected.score}% match</span>
+              <span className="ml-2 text-xs text-gray-500">€{selected.spaCPrice} · {selected.score}% match</span>
             </div>
             <span className="text-gray-400 text-xs ml-2">▼</span>
           </button>
@@ -270,7 +270,7 @@ function MatchForm({ item, onResolve }) {
       <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-gray-50 border border-gray-200">
         <span className="text-xs text-gray-500">Saving per unit</span>
         <span className="text-sm font-semibold" style={{ color: '#2FA37C' }}>
-          €{(item.price - selected.capsPrice).toFixed(2)} ({((item.price - selected.capsPrice) / item.price * 100).toFixed(1)}%)
+          €{(item.price - selected.spaCPrice).toFixed(2)} ({((item.price - selected.spaCPrice) / item.price * 100).toFixed(1)}%)
         </span>
       </div>
 
@@ -298,8 +298,8 @@ function NoMatchForm({ item, onResolve }) {
       </div>
 
       <div className="rounded-xl p-4 border border-gray-200 bg-gray-50">
-        <p className="text-xs font-medium text-gray-500 mb-1">No CaPS equivalent found</p>
-        <p className="text-sm text-gray-600">CaPS doesn't currently carry a direct equivalent for this item. You can skip it — it won't block submission.</p>
+        <p className="text-xs font-medium text-gray-500 mb-1">No SpAC equivalent found</p>
+        <p className="text-sm text-gray-600">SpAC doesn't currently carry a direct equivalent for this item. You can skip it — it won't block submission.</p>
       </div>
 
       <Actions
@@ -351,7 +351,7 @@ const MatchDropdown = forwardRef(function MatchDropdown({ candidates, selected, 
         {filtered.map(c => (
           <button key={c.name} onClick={() => onSelect(c)} className="w-full text-left px-3 py-2.5 hover:bg-gray-50 transition-colors">
             <p className="font-semibold text-sm" style={{ color: c.name === selected.name ? '#2FA37C' : '#1F2A44' }}>{c.name}</p>
-            <p className="text-xs text-gray-400">{c.unit} · €{c.capsPrice} · {c.score}% match</p>
+            <p className="text-xs text-gray-400">{c.unit} · €{c.spaCPrice} · {c.score}% match</p>
           </button>
         ))}
         {filtered.length === 0 && <p className="text-xs text-gray-400 px-3 py-3">No results</p>}

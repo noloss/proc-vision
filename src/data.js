@@ -38,7 +38,7 @@ export const LINE_ITEMS = [
     qty: 40,
     unit: 'ream',
     price: 4.85,
-    capsMatch: { name: 'HP Premium A4 80g Ream', price: 3.90, savings: 19.6 },
+    spaCMatch: { name: 'HP Premium A4 80g Ream', price: 3.90, savings: 19.6 },
   },
   {
     id: 2,
@@ -47,7 +47,7 @@ export const LINE_ITEMS = [
     qty: 10,
     unit: 'box',
     price: 2.30,
-    capsMatch: { name: 'Staedtler HB Pencils 12pk', price: 1.95, savings: 15.2 },
+    spaCMatch: { name: 'Staedtler HB Pencils 12pk', price: 1.95, savings: 15.2 },
   },
   {
     id: 3,
@@ -73,7 +73,7 @@ export const LINE_ITEMS = [
     qty: 20,
     unit: 'pad',
     price: 1.45,
-    capsMatch: { name: 'Post-it Notes 76x76 Yellow', price: 1.20, savings: 17.2 },
+    spaCMatch: { name: 'Post-it Notes 76x76 Yellow', price: 1.20, savings: 17.2 },
   },
   {
     id: 6,
@@ -82,7 +82,7 @@ export const LINE_ITEMS = [
     qty: 4,
     unit: 'box',
     price: 5.20,
-    capsMatch: { name: 'Bic Cristal Blue Ballpen 50pk', price: 4.40, savings: 15.4 },
+    spaCMatch: { name: 'Bic Cristal Blue Ballpen 50pk', price: 4.40, savings: 15.4 },
   },
   {
     id: 7,
@@ -91,7 +91,7 @@ export const LINE_ITEMS = [
     qty: 12,
     unit: 'unit',
     price: 2.85,
-    capsMatch: { name: 'Esselte Lever Arch File A4 70mm', price: 2.35, savings: 17.5 },
+    spaCMatch: { name: 'Esselte Lever Arch File A4 70mm', price: 2.35, savings: 17.5 },
   },
   {
     id: 8,
@@ -108,16 +108,16 @@ export const LINE_ITEMS = [
     qty: 5,
     unit: 'pack',
     price: 3.10,
-    capsMatch: { name: 'Staedtler Lumocolor Assorted 4pk', price: 2.65, savings: 14.5 },
+    spaCMatch: { name: 'Staedtler Lumocolor Assorted 4pk', price: 2.65, savings: 14.5 },
   },
 ]
 
 export const MATCH_CANDIDATES = [
-  { name: 'Avery L7163 Address Labels', unit: 'pack', capsPrice: 4.10, score: 72 },
-  { name: 'Avery L7160 Labels 21-up', unit: 'pack', capsPrice: 3.85, score: 68 },
-  { name: 'Avery L7651 Mini Labels', unit: 'pack', capsPrice: 2.95, score: 51 },
-  { name: 'Q-Connect Address Labels A4', unit: 'pack', capsPrice: 3.20, score: 44 },
-  { name: 'Avery Laser Labels White 24-up', unit: 'pack', capsPrice: 4.50, score: 38 },
+  { name: 'Avery L7163 Address Labels', unit: 'pack', spaCPrice: 4.10, score: 72 },
+  { name: 'Avery L7160 Labels 21-up', unit: 'pack', spaCPrice: 3.85, score: 68 },
+  { name: 'Avery L7651 Mini Labels', unit: 'pack', spaCPrice: 2.95, score: 51 },
+  { name: 'Q-Connect Address Labels A4', unit: 'pack', spaCPrice: 3.20, score: 44 },
+  { name: 'Avery Laser Labels White 24-up', unit: 'pack', spaCPrice: 4.50, score: 38 },
 ]
 
 export const FELLOWES_MATCH = { name: 'Fellowes SB-125i Bags 100pk', price: 17.90, score: 94 }

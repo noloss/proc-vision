@@ -8,7 +8,7 @@ const PROCESSING_MESSAGES = [
   'Extracting line items…',
   'Normalising units and currencies…',
   'Running quality checks…',
-  'Matching to CaPS price list…',
+  'Matching to SpAC price list…',
 ]
 
 export default function Upload() {
@@ -82,7 +82,7 @@ export default function Upload() {
       {subState === 'form' && (
         <div className="flex-1 max-w-2xl mx-auto w-full px-6 py-8 pb-28">
           <h1 className="text-2xl font-bold mb-1" style={{ color: '#1F2A44' }}>Upload your documents</h1>
-          <p className="text-gray-500 text-sm mb-6">Upload invoices or use sample data to see how CaPS analyses your spend.</p>
+          <p className="text-gray-500 text-sm mb-6">Upload invoices or use sample data to see how SpAC analyses your spend.</p>
           <div className="flex flex-col gap-4">
             {selectedCats.map(cat => {
               const uploaded = uploadedCategories.includes(cat.id)
@@ -160,7 +160,7 @@ export default function Upload() {
                 {[
                   { desc: 'Fellowes Apex Shredder Bags', issue: 'Extraction unclear — unit price may be wrong', cat: 'Office supplies' },
                   { desc: 'Avery L7160 Address Labels', issue: 'Low confidence match (72%) — please confirm', cat: 'Office supplies' },
-                  { desc: 'Scotch Magic Tape 19mm 8-pack', issue: 'No CaPS equivalent found', cat: 'Office supplies' },
+                  { desc: 'Scotch Magic Tape 19mm 8-pack', issue: 'No SpAC equivalent found', cat: 'Office supplies' },
                 ].map(item => (
                   <div key={item.desc} className="bg-white rounded-lg p-3 border border-amber-100">
                     <p className="font-medium text-sm" style={{ color: '#1F2A44' }}>{item.desc}</p>
