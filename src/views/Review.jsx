@@ -63,7 +63,7 @@ export default function Review() {
       <TopBar step="Step 3 of 3 · Review flagged items" />
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
         <div style={{ width: '45%', overflowY: 'auto', backgroundColor: '#F0F2F7', borderRight: '1px solid #E2E5EF' }}>
-          <InvoicePanel highlightId={currentId} />
+          <InvoicePanel highlightId={currentId} index={index} />
         </div>
         <div style={{ width: '55%', overflowY: 'auto', backgroundColor: '#F0F2F7' }}>
           <ReviewPanel
@@ -79,11 +79,13 @@ export default function Review() {
   )
 }
 
-function InvoicePanel({ highlightId }) {
+const INVOICE_IMAGES = ['8503509.jpg', '7600881.jpg']
+
+function InvoicePanel({ highlightId, index }) {
+  const img = INVOICE_IMAGES[index % INVOICE_IMAGES.length]
   return (
     <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <img src={`${import.meta.env.BASE_URL}8503509.jpg`} alt="Staples invoice" style={{ width: '100%', borderRadius: '10px', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }} />
-      <img src={`${import.meta.env.BASE_URL}7600881.jpg`} alt="Second invoice" style={{ width: '100%', borderRadius: '10px', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }} />
+      <img src={`${import.meta.env.BASE_URL}${img}`} alt="Invoice" style={{ width: '100%', borderRadius: '10px', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }} />
       <div style={{ backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E5EF', padding: '16px' }}>
         <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#9CA3AF', marginBottom: '12px' }}>Line items</p>
         <table style={{ width: '100%', fontSize: '12px', borderCollapse: 'collapse' }}>
