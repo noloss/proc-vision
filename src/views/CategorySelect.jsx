@@ -29,45 +29,42 @@ export default function CategorySelect() {
           Choose the categories you want to include. You can add more later.
         </p>
 
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E5EF', overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
-          {CATEGORIES.map((cat, i) => {
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+          {CATEGORIES.map(cat => {
             const selected = selectedCategories.includes(cat.id)
             return (
               <button
                 key={cat.id}
                 onClick={() => toggle(cat.id)}
                 style={{
-                  width: '100%',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '14px',
-                  padding: '14px 20px',
+                  gap: '12px',
+                  padding: '14px 16px',
                   backgroundColor: selected ? '#F5F7FF' : '#FFFFFF',
-                  borderLeft: selected ? '3px solid #1B3DBF' : '3px solid transparent',
-                  borderTop: 'none',
-                  borderRight: 'none',
-                  borderBottom: i < CATEGORIES.length - 1 ? '1px solid #F3F4F6' : 'none',
+                  border: selected ? '1.5px solid #1B3DBF' : '1.5px solid #E2E5EF',
+                  borderRadius: '10px',
                   cursor: 'pointer',
                   textAlign: 'left',
-                  transition: 'background-color 0.1s',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                  position: 'relative',
+                  transition: 'border-color 0.1s, background-color 0.1s',
                 }}
-                onMouseEnter={e => { if (!selected) e.currentTarget.style.backgroundColor = '#FAFAFA' }}
-                onMouseLeave={e => { if (!selected) e.currentTarget.style.backgroundColor = '#FFFFFF' }}
               >
-                <span style={{ color: selected ? '#1B3DBF' : '#6B7280', flexShrink: 0 }}>
-                  <CategoryIcon id={cat.id} size={18} />
-                </span>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '14px', fontWeight: selected ? 600 : 500, color: selected ? '#1B3DBF' : '#0D1840' }}>
-                    {cat.label}
-                  </div>
-                  <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '1px' }}>{cat.desc}</div>
-                </div>
                 {selected && (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B3DBF" strokeWidth="2.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
-                  </svg>
+                  <div style={{ position: 'absolute', top: '8px', right: '8px', width: '16px', height: '16px', backgroundColor: '#1B3DBF', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <svg width="9" height="7" viewBox="0 0 10 8" fill="none">
+                      <path d="M1 4l2.5 2.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
                 )}
+                <span style={{ color: selected ? '#1B3DBF' : '#6B7280', flexShrink: 0 }}>
+                  <CategoryIcon id={cat.id} size={20} />
+                </span>
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: 600, color: selected ? '#1B3DBF' : '#0D1840', lineHeight: 1.3 }}>{cat.label}</div>
+                  <div style={{ fontSize: '11px', color: '#9CA3AF', marginTop: '2px' }}>{cat.desc}</div>
+                </div>
               </button>
             )
           })}
