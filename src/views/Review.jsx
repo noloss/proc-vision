@@ -3,309 +3,329 @@ import { useNavigate } from 'react-router-dom'
 import TopBar from '../components/TopBar'
 import { LINE_ITEMS, MATCH_CANDIDATES, FELLOWES_MATCH } from '../data'
 
-const TOPBAR_HEIGHT = 52
+const FLAGGED_IDS = [4, 3, 8]
 
 export default function Review() {
-  const [focusedRowId, setFocusedRowId] = useState(null)
+  const navigate = useNavigate()
+  const [index, setIndex] = useState(0)
+  const [resolutions, setResolutions] = useState({})
+
+  const currentId = FLAGGED_IDS[index]
+  const currentItem = LINE_ITEMS.find(i => i.id === currentId)
+  const total = FLAGGED_IDS.length
+  const done = index >= total
+
+  function resolve(id, resolution) {
+    setResolutions(prev => ({ ...prev, [id]: resolution }))
+    if (index < total - 1) {
+      setIndex(i => i + 1)
+    } else {
+      setIndex(total)
+    }
+  }
+
+  function handleSubmit() {
+    navigate('/status')
+  }
+
+  if (done) {
+    return (
+      <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F8FAFC' }}>
+        <TopBar step="Step 3 of 3 · Review flagged items" />
+        <div className="flex-1 flex flex-col items-center justify-center px-6 py-10">
+          <div className="w-full max-w-md text-center">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#ECFDF5' }}>
+              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="#2FA37C" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-bold mb-2" style={{ color: '#1F2A44' }}>All items reviewed</h2>
+            <div className="flex flex-col gap-2 mb-8 mt-4 text-left">
+              {FLAGGED_IDS.map(id => {
+                const item = LINE_ITEMS.find(i => i.id === id)
+                const r = resolutions[id]
+                return (
+                  <div key={id} className="flex items-center gap-3 bg-white rounded-lg px-4 py-3 border border-gray-100">
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full shrink-0"
+                      style={{ backgroundColor: r?.type === 'approved' ? '#ECFDF5' : '#F3F4F6', color: r?.type === 'approved' ? '#2FA37C' : '#6B7280' }}>
+                      {r?.type === 'approved' ? 'Approved' : 'Skipped'}
+                    </span>
+                    <span className="text-sm text-gray-700 truncate">{item.desc}</span>
+                  </div>
+                )
+              })}
+            </div>
+            <button
+              onClick={handleSubmit}
+              className="w-full py-2.5 rounded-lg text-white font-semibold text-sm"
+              style={{ backgroundColor: '#2FA37C' }}
+            >
+              Submit to CaPS →
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col" style={{ height: '100vh' }}>
       <TopBar step="Step 3 of 3 · Review flagged items" />
       <div className="flex flex-1 overflow-hidden">
-        <div className="overflow-y-auto" style={{ width: '40%', height: `calc(100vh - ${TOPBAR_HEIGHT}px)` }}>
-          <MockInvoice focusedRowId={focusedRowId} />
+        <div className="overflow-y-auto bg-gray-50 border-r border-gray-200" style={{ width: '45%' }}>
+          <InvoicePanel highlightId={currentId} />
         </div>
-        <div className="overflow-y-auto border-l border-gray-200" style={{ width: '60%', height: `calc(100vh - ${TOPBAR_HEIGHT}px)` }}>
-          <ReviewTable setFocusedRowId={setFocusedRowId} />
+        <div className="overflow-y-auto" style={{ width: '55%' }}>
+          <ReviewPanel
+            key={currentId}
+            item={currentItem}
+            index={index}
+            total={total}
+            onResolve={resolve}
+          />
         </div>
       </div>
     </div>
   )
 }
 
-function MockInvoice({ focusedRowId }) {
+function InvoicePanel({ highlightId }) {
   return (
     <div className="p-4 flex flex-col gap-4">
-      <img src={`${import.meta.env.BASE_URL}8503509.jpg`} alt="Staples invoice" className="w-full rounded-lg shadow-md" />
-      <img src={`${import.meta.env.BASE_URL}7600881.jpg`} alt="Second invoice" className="w-full rounded-lg shadow-md" />
-      <div className="bg-white rounded-xl shadow p-4">
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-3">Extracted line items</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-gray-100">
-                {['#', 'Description', 'Qty', 'Unit', 'Price €'].map(h => (
-                  <th key={h} className={`py-1 pr-2 text-gray-400 font-medium ${h === '#' || h === 'Qty' || h === 'Unit' || h === 'Price €' ? 'text-right' : 'text-left'}`}>{h}</th>
-                ))}
+      <img src={`${import.meta.env.BASE_URL}8503509.jpg`} alt="Staples invoice" className="w-full rounded-lg shadow" />
+      <img src={`${import.meta.env.BASE_URL}7600881.jpg`} alt="Second invoice" className="w-full rounded-lg shadow" />
+      <div className="bg-white rounded-xl shadow-sm p-4">
+        <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-3">Line items</p>
+        <table className="w-full text-xs">
+          <tbody>
+            {LINE_ITEMS.map(item => (
+              <tr
+                key={item.id}
+                className="border-b border-gray-50"
+                style={{ backgroundColor: item.id === highlightId ? '#FEFCE8' : undefined }}
+              >
+                <td className="py-1.5 pr-2 text-gray-400 w-5">{item.id}</td>
+                <td className="py-1.5 pr-2 text-gray-700 font-medium" style={{ maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.desc}</td>
+                <td className="py-1.5 pr-2 text-right text-gray-500">{item.qty}</td>
+                <td className="py-1.5 text-right text-gray-700">
+                  {item.extractedPrice != null
+                    ? <span style={{ color: '#F59E0B' }}>€{item.extractedPrice.toFixed(2)}</span>
+                    : `€${item.price.toFixed(2)}`}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {LINE_ITEMS.map(item => (
-                <tr
-                  key={item.id}
-                  style={{ backgroundColor: focusedRowId === item.id ? '#FEFCE8' : undefined }}
-                  className="border-b border-gray-50 transition-colors"
-                >
-                  <td className="py-1.5 pr-2 text-right text-gray-400">{item.id}</td>
-                  <td className="py-1.5 pr-2 text-gray-700 font-medium" style={{ maxWidth: '130px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'table-cell' }}>{item.desc}</td>
-                  <td className="py-1.5 pr-2 text-right text-gray-600">{item.qty}</td>
-                  <td className="py-1.5 pr-2 text-right text-gray-500">{item.unit}</td>
-                  <td className="py-1.5 text-right text-gray-700">
-                    {item.extractedPrice != null
-                      ? <span style={{ color: '#F59E0B' }}>€{item.extractedPrice.toFixed(2)}</span>
-                      : `€${item.price.toFixed(2)}`}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   )
 }
 
-const INITIAL_ROW_STATES = {
-  1: 'auto', 2: 'auto', 3: 'match_review', 4: 'extraction_error',
-  5: 'auto', 6: 'auto', 7: 'auto', 8: 'no_match', 9: 'auto',
-}
-
-function ReviewTable({ setFocusedRowId }) {
-  const navigate = useNavigate()
-  const [rowStates, setRowStates] = useState(INITIAL_ROW_STATES)
-  const [submitted, setSubmitted] = useState(false)
-
-  function setRowStatus(id, status) {
-    setRowStates(prev => ({ ...prev, [id]: status }))
-  }
-
-  const resolvedCount = [3, 4, 8].filter(id => rowStates[id] === 'approved' || rowStates[id] === 'flagged').length
-  const canSubmit = rowStates[3] === 'approved' && rowStates[4] === 'approved' && (rowStates[8] === 'approved' || rowStates[8] === 'flagged')
-
-  function handleSubmit() {
-    if (!canSubmit || submitted) return
-    setSubmitted(true)
-    setTimeout(() => navigate('/status'), 800)
-  }
+function ReviewPanel({ item, index, total, onResolve }) {
+  const issueLabel = item.id === 4
+    ? 'Extraction unclear — unit price may be wrong'
+    : item.id === 3
+    ? 'Low confidence match (72%) — please confirm'
+    : 'No CaPS equivalent found'
 
   return (
-    <div className="flex flex-col min-h-full pb-24">
-      <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-3 z-10">
-        <p className="text-xs text-gray-400">3 items flagged · Office supplies · INV-2024-8821</p>
-      </div>
-      <div className="flex-1 px-4 py-4 flex flex-col gap-3">
-        {LINE_ITEMS.map(item => (
-          <ReviewRow
-            key={item.id}
-            item={item}
-            status={rowStates[item.id]}
-            setStatus={s => setRowStatus(item.id, s)}
-            onFocus={() => setFocusedRowId(item.id)}
-            onBlur={() => setFocusedRowId(null)}
-          />
-        ))}
-      </div>
-      <div
-        className="fixed bottom-0 border-t border-gray-200 bg-white px-6 py-4 flex items-center justify-between z-10"
-        style={{ width: '60%', right: 0 }}
-      >
-        <span className="text-sm text-gray-500">{resolvedCount} of 3 resolved</span>
-        <button
-          onClick={handleSubmit}
-          disabled={!canSubmit}
-          className="px-6 py-2 rounded-lg text-white font-semibold text-sm transition-all"
-          style={{ backgroundColor: canSubmit ? '#2FA37C' : '#9CA3AF', cursor: canSubmit ? 'pointer' : 'not-allowed' }}
-        >
-          {submitted ? 'Submitted ✓' : 'Approve all & submit →'}
-        </button>
-      </div>
-    </div>
-  )
-}
-
-function ReviewRow({ item, status, setStatus, onFocus, onBlur }) {
-  return (
-    <div
-      className="rounded-xl p-4 transition-colors"
-      style={{
-        backgroundColor: status === 'approved' ? '#ECFDF5' : 'white',
-        border: `1px solid ${status === 'approved' ? '#A7F3D0' : '#E2E8F0'}`,
-      }}
-      onMouseEnter={onFocus}
-      onMouseLeave={onBlur}
-    >
-      <div className="flex items-start justify-between gap-2 mb-2">
-        <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm truncate" style={{ color: '#1F2A44' }}>{item.desc}</p>
-          <p className="text-xs text-gray-400">{item.ref} · {item.qty} {item.unit}</p>
-        </div>
-        <StatusBadge status={status} />
-      </div>
-
-      {status === 'auto' && item.capsMatch && (
-        <div className="flex items-center justify-between mt-2 flex-wrap gap-2">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs px-2 py-0.5 rounded-full font-medium text-white" style={{ backgroundColor: '#2FA37C' }}>
-              {item.capsMatch.name}
-            </span>
-            <span className="text-xs font-semibold" style={{ color: '#2FA37C' }}>€{item.capsMatch.price} · -{item.capsMatch.savings}%</span>
+    <div className="p-6 flex flex-col gap-6">
+      <div>
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-xs text-gray-400">Item {index + 1} of {total}</span>
+          <div className="flex gap-1">
+            {Array.from({ length: total }).map((_, i) => (
+              <div key={i} className="w-2 h-2 rounded-full" style={{ backgroundColor: i < index ? '#2FA37C' : i === index ? '#1F2A44' : '#E2E8F0' }} />
+            ))}
           </div>
-          <button
-            onClick={() => setStatus('approved')}
-            className="text-xs px-3 py-1 rounded-lg font-medium text-white shrink-0"
-            style={{ backgroundColor: '#2FA37C' }}
-          >
-            ✓ Approve
-          </button>
         </div>
-      )}
+        <h2 className="text-lg font-bold" style={{ color: '#1F2A44' }}>{item.desc}</h2>
+        <p className="text-xs mt-0.5" style={{ color: '#F59E0B' }}>{issueLabel}</p>
+      </div>
 
-      {status === 'approved' && item.capsMatch && (
-        <div className="flex items-center gap-2 mt-1">
-          <span className="text-xs px-2 py-0.5 rounded-full font-medium text-white" style={{ backgroundColor: '#2FA37C' }}>
-            {item.capsMatch.name} · €{item.capsMatch.price}
-          </span>
-        </div>
-      )}
-
-      {item.id === 4 && (status === 'extraction_error' || status === 'extraction_corrected') && (
-        <ExtractionErrorRow item={item} status={status} setStatus={setStatus} />
-      )}
-
-      {item.id === 3 && (status === 'match_review' || status === 'match_selected') && (
-        <MatchReviewRow item={item} status={status} setStatus={setStatus} />
-      )}
-
-      {item.id === 8 && status === 'no_match' && (
-        <div className="mt-2 flex items-center justify-between gap-2 flex-wrap">
-          <span className="text-xs text-gray-400 italic">No CaPS equivalent found</span>
-          <button
-            onClick={() => setStatus('flagged')}
-            className="text-xs px-3 py-1 rounded-lg border border-gray-200 text-gray-600 font-medium shrink-0"
-          >
-            Flag for manual review
-          </button>
-        </div>
-      )}
-
-      {item.id === 8 && status === 'flagged' && (
-        <p className="mt-1 text-xs text-gray-400 italic">Flagged — will not block submission</p>
-      )}
+      {item.id === 4 && <ExtractionForm item={item} onResolve={onResolve} />}
+      {item.id === 3 && <MatchForm item={item} onResolve={onResolve} />}
+      {item.id === 8 && <NoMatchForm item={item} onResolve={onResolve} />}
     </div>
   )
 }
 
-function ExtractionErrorRow({ item, setStatus }) {
-  const [value, setValue] = useState(String(item.extractedPrice))
-  const [corrected, setCorrected] = useState(false)
-  const numVal = parseFloat(value)
-  const changed = !isNaN(numVal) && numVal !== item.extractedPrice
+function Field({ label, children }) {
+  return (
+    <div>
+      <label className="text-xs font-medium text-gray-500 block mb-1">{label}</label>
+      {children}
+    </div>
+  )
+}
+
+function LockedField({ value }) {
+  return (
+    <div className="px-3 py-2 rounded-lg text-sm bg-gray-50 border border-gray-200 text-gray-700">{value}</div>
+  )
+}
+
+function ExtractionForm({ item, onResolve }) {
+  const [unitPrice, setUnitPrice] = useState(String(item.extractedPrice))
+  const numVal = parseFloat(unitPrice)
+  const total = !isNaN(numVal) ? (item.qty * numVal).toFixed(2) : '—'
 
   return (
-    <div className="mt-3">
-      <div className="flex items-end gap-3 flex-wrap">
-        <div>
-          <label className="text-xs text-gray-500 block mb-1">Unit price €</label>
+    <div className="flex flex-col gap-4">
+      <div className="rounded-xl p-4 border border-amber-200" style={{ backgroundColor: '#FFFBEB' }}>
+        <p className="text-xs font-medium mb-1" style={{ color: '#92400E' }}>What we extracted</p>
+        <p className="text-sm text-gray-700">Unit price read as <span className="font-bold" style={{ color: '#F59E0B' }}>€{item.extractedPrice}</span> — this looks too low for a box of shredder bags. Please correct if needed.</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Description">
+          <LockedField value={item.desc} />
+        </Field>
+        <Field label="Ref">
+          <LockedField value={item.ref} />
+        </Field>
+        <Field label="Qty">
+          <LockedField value={`${item.qty} ${item.unit}`} />
+        </Field>
+        <Field label="Unit price €">
           <input
             type="number"
-            value={value}
-            onChange={e => setValue(e.target.value)}
-            disabled={corrected}
+            value={unitPrice}
+            onChange={e => setUnitPrice(e.target.value)}
             step="0.01"
-            className="text-sm px-2 py-1 rounded-lg w-24"
-            style={{
-              border: corrected ? '1px solid #E2E8F0' : '1.5px solid #F59E0B',
-              outline: 'none',
-              backgroundColor: corrected ? '#F9FAFB' : 'white',
-            }}
+            className="w-full px-3 py-2 rounded-lg text-sm border"
+            style={{ border: '1.5px solid #F59E0B', outline: 'none' }}
           />
-        </div>
-        <div className="text-sm text-gray-500 pb-1">
-          Total: <span className="font-semibold" style={{ color: '#1F2A44' }}>€{(item.qty * (parseFloat(value) || 0)).toFixed(2)}</span>
-        </div>
+        </Field>
       </div>
 
-      {!corrected && (
-        <div className="mt-2 flex items-center gap-2">
-          <span className="text-xs italic text-gray-400">Resolve extraction first</span>
-          <button
-            onClick={() => setCorrected(true)}
-            disabled={!changed}
-            className="text-xs px-3 py-1 rounded-lg font-medium text-white"
-            style={{ backgroundColor: changed ? '#1F2A44' : '#9CA3AF', cursor: changed ? 'pointer' : 'not-allowed' }}
-          >
-            Correct & continue →
-          </button>
-        </div>
-      )}
+      <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-gray-50 border border-gray-200">
+        <span className="text-xs text-gray-500">Line total</span>
+        <span className="text-sm font-semibold" style={{ color: '#1F2A44' }}>€{total}</span>
+      </div>
 
-      {corrected && (
-        <div className="mt-2 flex items-center gap-2 flex-wrap">
-          <span className="text-xs px-2 py-0.5 rounded-full font-medium text-white" style={{ backgroundColor: '#2FA37C' }}>
-            {FELLOWES_MATCH.name} · €{FELLOWES_MATCH.price}/pack · {FELLOWES_MATCH.score}%
-          </span>
-          <button
-            onClick={() => setStatus('approved')}
-            className="text-xs px-3 py-1 rounded-lg font-medium text-white shrink-0"
-            style={{ backgroundColor: '#2FA37C' }}
-          >
-            Approve match
-          </button>
-        </div>
-      )}
+      <Actions onApprove={() => onResolve(item.id, { type: 'approved', unitPrice: numVal })} onSkip={() => onResolve(item.id, { type: 'skipped' })} />
     </div>
   )
 }
 
-function MatchReviewRow({ setStatus }) {
-  const [selectedCandidate, setSelectedCandidate] = useState(MATCH_CANDIDATES[0])
+function MatchForm({ item, onResolve }) {
+  const [selected, setSelected] = useState(MATCH_CANDIDATES[0])
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef(null)
 
   useEffect(() => {
     if (!dropdownOpen) return
-    function handleClick(e) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setDropdownOpen(false)
-      }
+    function handler(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setDropdownOpen(false)
     }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
   }, [dropdownOpen])
 
   return (
-    <div className="mt-3 relative">
-      <div className="flex items-center gap-2 mb-2 flex-wrap">
-        <div className="flex items-center gap-1.5 flex-1 flex-wrap">
-          <span className="text-xs px-2 py-0.5 rounded-full font-medium text-white" style={{ backgroundColor: '#2FA37C' }}>
-            {selectedCandidate.name}
-          </span>
-          <span className="text-xs font-semibold" style={{ color: '#2FA37C' }}>€{selectedCandidate.capsPrice}</span>
-        </div>
-        <button
-          onClick={() => setDropdownOpen(o => !o)}
-          className="text-xs underline text-gray-500 shrink-0"
-        >
-          Change ›
-        </button>
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Description">
+          <LockedField value={item.desc} />
+        </Field>
+        <Field label="Ref">
+          <LockedField value={item.ref} />
+        </Field>
+        <Field label="Qty">
+          <LockedField value={`${item.qty} ${item.unit}`} />
+        </Field>
+        <Field label="Your price">
+          <LockedField value={`€${item.price.toFixed(2)}`} />
+        </Field>
       </div>
 
-      <ConfidenceBar score={selectedCandidate.score} />
+      <div>
+        <label className="text-xs font-medium text-gray-500 block mb-1">CaPS match</label>
+        <div className="relative">
+          <button
+            onClick={() => setDropdownOpen(o => !o)}
+            className="w-full flex items-center justify-between px-3 py-2 rounded-lg border text-sm text-left"
+            style={{ border: '1.5px solid #2FA37C', backgroundColor: '#F0FDF4' }}
+          >
+            <div>
+              <span className="font-medium" style={{ color: '#1F2A44' }}>{selected.name}</span>
+              <span className="ml-2 text-xs text-gray-500">€{selected.capsPrice} · {selected.score}% match</span>
+            </div>
+            <span className="text-gray-400 text-xs ml-2">▼</span>
+          </button>
 
-      {dropdownOpen && (
-        <MatchDropdown
-          ref={dropdownRef}
-          candidates={MATCH_CANDIDATES}
-          selected={selectedCandidate}
-          onSelect={c => { setSelectedCandidate(c); setDropdownOpen(false) }}
-        />
-      )}
+          {dropdownOpen && (
+            <MatchDropdown
+              ref={dropdownRef}
+              candidates={MATCH_CANDIDATES}
+              selected={selected}
+              onSelect={c => { setSelected(c); setDropdownOpen(false) }}
+            />
+          )}
+        </div>
+        <ConfidenceBar score={selected.score} />
+      </div>
 
+      <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-gray-50 border border-gray-200">
+        <span className="text-xs text-gray-500">Saving per unit</span>
+        <span className="text-sm font-semibold" style={{ color: '#2FA37C' }}>
+          €{(item.price - selected.capsPrice).toFixed(2)} ({((item.price - selected.capsPrice) / item.price * 100).toFixed(1)}%)
+        </span>
+      </div>
+
+      <Actions onApprove={() => onResolve(item.id, { type: 'approved', match: selected })} onSkip={() => onResolve(item.id, { type: 'skipped' })} />
+    </div>
+  )
+}
+
+function NoMatchForm({ item, onResolve }) {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Description">
+          <LockedField value={item.desc} />
+        </Field>
+        <Field label="Ref">
+          <LockedField value={item.ref} />
+        </Field>
+        <Field label="Qty">
+          <LockedField value={`${item.qty} ${item.unit}`} />
+        </Field>
+        <Field label="Your price">
+          <LockedField value={`€${item.price.toFixed(2)}`} />
+        </Field>
+      </div>
+
+      <div className="rounded-xl p-4 border border-gray-200 bg-gray-50">
+        <p className="text-xs font-medium text-gray-500 mb-1">No CaPS equivalent found</p>
+        <p className="text-sm text-gray-600">CaPS doesn't currently carry a direct equivalent for this item. You can skip it — it won't block submission.</p>
+      </div>
+
+      <Actions
+        onApprove={() => onResolve(item.id, { type: 'approved' })}
+        onSkip={() => onResolve(item.id, { type: 'skipped' })}
+        approveLabel="Mark as reviewed"
+      />
+    </div>
+  )
+}
+
+function Actions({ onApprove, onSkip, approveLabel = 'Approve →' }) {
+  return (
+    <div className="flex gap-3 pt-2">
       <button
-        onClick={() => setStatus('approved')}
-        className="mt-2 text-xs px-3 py-1 rounded-lg font-medium text-white"
+        onClick={onApprove}
+        className="flex-1 py-2.5 rounded-lg text-white font-semibold text-sm"
         style={{ backgroundColor: '#2FA37C' }}
       >
-        Approve match
+        {approveLabel}
+      </button>
+      <button
+        onClick={onSkip}
+        className="px-5 py-2.5 rounded-lg text-sm font-medium border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+      >
+        Skip for later
       </button>
     </div>
   )
@@ -316,67 +336,39 @@ const MatchDropdown = forwardRef(function MatchDropdown({ candidates, selected, 
   const filtered = candidates.filter(c => c.name.toLowerCase().includes(query.toLowerCase()))
 
   return (
-    <div
-      ref={ref}
-      className="absolute z-20 bg-white rounded-xl shadow-xl border border-gray-100 w-80 mt-1"
-      style={{ left: 0, top: '100%' }}
-    >
+    <div ref={ref} className="absolute z-20 bg-white rounded-xl shadow-xl border border-gray-100 w-full mt-1" style={{ top: '100%', left: 0 }}>
       <div className="p-2 border-b border-gray-100">
         <input
           autoFocus
           type="text"
-          placeholder="Search candidates…"
+          placeholder="Search…"
           value={query}
           onChange={e => setQuery(e.target.value)}
           className="w-full text-sm px-3 py-1.5 rounded-lg border border-gray-200 outline-none"
-          style={{ '--tw-ring-color': '#2FA37C' }}
         />
       </div>
-      <div className="max-h-52 overflow-y-auto">
+      <div className="max-h-48 overflow-y-auto">
         {filtered.map(c => (
-          <button
-            key={c.name}
-            onClick={() => onSelect(c)}
-            className="w-full text-left px-3 py-2.5 hover:bg-gray-50 transition-colors"
-          >
+          <button key={c.name} onClick={() => onSelect(c)} className="w-full text-left px-3 py-2.5 hover:bg-gray-50 transition-colors">
             <p className="font-semibold text-sm" style={{ color: c.name === selected.name ? '#2FA37C' : '#1F2A44' }}>{c.name}</p>
-            <p className="text-xs text-gray-400">{c.unit} · €{c.capsPrice}</p>
-            <ConfidenceBar score={c.score} small />
+            <p className="text-xs text-gray-400">{c.unit} · €{c.capsPrice} · {c.score}% match</p>
           </button>
         ))}
-        {filtered.length === 0 && (
-          <p className="text-xs text-gray-400 px-3 py-3">No matches found</p>
-        )}
+        {filtered.length === 0 && <p className="text-xs text-gray-400 px-3 py-3">No results</p>}
       </div>
     </div>
   )
 })
 
-function ConfidenceBar({ score, small }) {
+function ConfidenceBar({ score }) {
   const color = score >= 70 ? '#2FA37C' : score >= 50 ? '#F59E0B' : '#EF4444'
   return (
-    <div className={`flex items-center gap-2 ${small ? 'mt-1' : 'mb-1'}`}>
-      <div className={`flex-1 bg-gray-100 rounded-full overflow-hidden ${small ? 'h-1' : 'h-1.5'}`}>
+    <div className="flex items-center gap-2 mt-2">
+      <div className="flex-1 bg-gray-100 rounded-full h-1.5 overflow-hidden">
         <div className="rounded-full h-full" style={{ width: `${score}%`, backgroundColor: color }} />
       </div>
-      <span className="text-xs font-medium" style={{ color }}>{score}%</span>
+      <span className="text-xs font-medium" style={{ color }}>{score}% confidence</span>
     </div>
   )
 }
 
-function StatusBadge({ status }) {
-  const config = {
-    auto: { label: 'Ready', bg: '#ECFDF5', color: '#2FA37C' },
-    approved: { label: 'Approved', bg: '#ECFDF5', color: '#2FA37C' },
-    extraction_error: { label: 'Needs review', bg: '#FEF3C7', color: '#92400E' },
-    match_review: { label: 'Review match', bg: '#FEF9C3', color: '#854D0E' },
-    no_match: { label: 'No match', bg: '#FEF2F2', color: '#991B1B' },
-    flagged: { label: 'Flagged', bg: '#F3F4F6', color: '#6B7280' },
-  }
-  const c = config[status] || config.auto
-  return (
-    <span className="shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: c.bg, color: c.color }}>
-      {c.label}
-    </span>
-  )
-}

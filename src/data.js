@@ -13,7 +13,7 @@ export const CATEGORIES = [
   { id: 'packaging', label: 'Packaging', icon: '📦', desc: 'Boxes, tape, labels' },
 ]
 
-export const DEFAULT_SELECTED = ['office', 'it', 'software', 'mobile']
+export const DEFAULT_SELECTED = []
 
 export const SAMPLE_FILES = {
   office: 'staples_invoice_2024.pdf',
