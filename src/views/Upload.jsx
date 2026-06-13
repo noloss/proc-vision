@@ -33,91 +33,86 @@ export default function Upload() {
 
   useEffect(() => {
     if (subState !== 'processing') return
-    const msgInterval = setInterval(() => {
-      setMsgIndex(i => (i + 1) % PROCESSING_MESSAGES.length)
-    }, 700)
+    const msgInterval = setInterval(() => setMsgIndex(i => (i + 1) % PROCESSING_MESSAGES.length), 700)
     const progressInterval = setInterval(() => {
-      setProgress(p => {
-        if (p >= 100) {
-          clearInterval(progressInterval)
-          return 100
-        }
-        return p + 2
-      })
+      setProgress(p => p >= 100 ? 100 : p + 2)
     }, 50)
     const done = setTimeout(() => {
       clearInterval(msgInterval)
       clearInterval(progressInterval)
       setSubState('results')
     }, 2500)
-    return () => {
-      clearInterval(msgInterval)
-      clearInterval(progressInterval)
-      clearTimeout(done)
-    }
+    return () => { clearInterval(msgInterval); clearInterval(progressInterval); clearTimeout(done) }
   }, [subState])
 
   const canProcess = uploadedCategories.length >= 1
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F8FAFC' }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F0F2F7' }}>
       <TopBar step="Step 2 of 3 · Upload documents" />
 
       {subState === 'processing' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(15,23,42,0.7)', backdropFilter: 'blur(4px)' }}>
-          <div className="bg-white rounded-2xl p-10 w-full max-w-md mx-4 text-center shadow-2xl">
-            <div className="text-4xl mb-4">⚙️</div>
-            <h2 className="text-lg font-semibold mb-6" style={{ color: '#1F2A44' }}>Reading your documents…</h2>
-            <div className="w-full bg-gray-100 rounded-full h-2 mb-4 overflow-hidden">
-              <div
-                className="h-2 rounded-full transition-all"
-                style={{ width: `${progress}%`, backgroundColor: '#2FA37C' }}
-              />
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(10,18,60,0.75)', backdropFilter: 'blur(6px)' }}>
+          <div className="bg-white rounded-2xl p-10 w-full max-w-md mx-4 text-center" style={{ boxShadow: '0 24px 64px rgba(0,0,0,0.18)' }}>
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-5" style={{ backgroundColor: '#EEF1FB' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B3DBF" strokeWidth="2">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              </svg>
             </div>
-            <p className="text-sm text-gray-500 h-5">{PROCESSING_MESSAGES[msgIndex]}</p>
+            <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#0D1840', marginBottom: '20px' }}>Reading your documents…</h2>
+            <div style={{ width: '100%', backgroundColor: '#EEF1FB', borderRadius: '99px', height: '6px', marginBottom: '14px', overflow: 'hidden' }}>
+              <div style={{ width: `${progress}%`, height: '100%', backgroundColor: '#1B3DBF', borderRadius: '99px', transition: 'width 50ms linear' }} />
+            </div>
+            <p style={{ fontSize: '13px', color: '#6B7280', height: '20px' }}>{PROCESSING_MESSAGES[msgIndex]}</p>
           </div>
         </div>
       )}
 
       {subState === 'form' && (
-        <div className="flex-1 max-w-2xl mx-auto w-full px-6 py-8 pb-28">
-          <h1 className="text-2xl font-bold mb-1" style={{ color: '#1F2A44' }}>Upload your documents</h1>
-          <p className="text-gray-500 text-sm mb-6">Upload invoices or use sample data to see how SpAC analyses your spend.</p>
-          <div className="flex flex-col gap-4">
+        <div className="flex-1 max-w-2xl mx-auto w-full px-8 py-10 pb-28">
+          <p style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', color: '#6B7280', textTransform: 'uppercase', marginBottom: '8px' }}>
+            Cost analysis
+          </p>
+          <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#0D1840', marginBottom: '6px' }}>Upload your documents</h1>
+          <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '32px' }}>
+            Upload invoices for each category, or use sample data to see how SpAC analyses your spend.
+          </p>
+          <div className="flex flex-col gap-3">
             {selectedCats.map(cat => {
               const uploaded = uploadedCategories.includes(cat.id)
               const filename = SAMPLE_FILES[cat.id]
               return (
-                <div key={cat.id} className="rounded-xl p-4" style={{ backgroundColor: '#EDF3F9' }}>
+                <div key={cat.id} style={{ backgroundColor: '#FFFFFF', borderRadius: '10px', padding: '16px 20px', border: '1px solid #E2E5EF' }}>
                   <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">{cat.icon}</span>
-                      <span className="font-semibold text-sm" style={{ color: '#1F2A44' }}>{cat.label}</span>
+                    <div className="flex items-center gap-3">
+                      <span style={{ fontSize: '20px' }}>{cat.icon}</span>
+                      <span style={{ fontSize: '14px', fontWeight: 600, color: '#0D1840' }}>{cat.label}</span>
                     </div>
                     {uploaded ? (
-                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#ECFDF5', color: '#2FA37C' }}>Uploaded ✓</span>
+                      <span style={{ fontSize: '12px', fontWeight: 600, padding: '3px 10px', borderRadius: '99px', backgroundColor: '#ECFDF5', color: '#059669' }}>
+                        Uploaded ✓
+                      </span>
                     ) : (
-                      <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">Awaiting upload</span>
+                      <span style={{ fontSize: '12px', fontWeight: 500, padding: '3px 10px', borderRadius: '99px', backgroundColor: '#F3F4F6', color: '#9CA3AF' }}>
+                        Awaiting upload
+                      </span>
                     )}
                   </div>
                   {uploaded ? (
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-gray-200">
-                      <span className="text-sm">📄</span>
-                      <span className="text-sm text-gray-700 font-medium">{filename}</span>
+                    <div className="flex items-center gap-2" style={{ padding: '10px 14px', borderRadius: '8px', backgroundColor: '#F8FAFC', border: '1px solid #E2E5EF' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      <span style={{ fontSize: '13px', color: '#374151', fontWeight: 500 }}>{filename}</span>
                     </div>
                   ) : (
-                    <div
-                      className="border-2 border-dashed border-gray-300 rounded-lg px-4 py-5 text-center"
-                      style={{ cursor: 'default' }}
-                    >
-                      <p className="text-sm text-gray-400 mb-1">Drop file here or <span className="text-gray-400">browse</span></p>
-                      <p className="text-xs text-gray-300">PDF, Excel, Word</p>
+                    <div style={{ border: '1.5px dashed #D1D5DB', borderRadius: '8px', padding: '20px', textAlign: 'center' }}>
+                      <p style={{ fontSize: '13px', color: '#9CA3AF', marginBottom: '2px' }}>Drop file here or browse</p>
+                      <p style={{ fontSize: '12px', color: '#C4C9D4' }}>PDF, Excel, Word accepted</p>
                     </div>
                   )}
                   {!uploaded && (
                     <button
                       onClick={() => markUploaded(cat.id)}
-                      className="mt-2 text-xs text-gray-400 hover:text-gray-600 underline"
+                      style={{ marginTop: '10px', fontSize: '12px', color: '#1B3DBF', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 500 }}
                     >
                       Use sample data →
                     </button>
@@ -130,51 +125,48 @@ export default function Upload() {
       )}
 
       {subState === 'results' && (
-        <div className="flex-1 max-w-2xl mx-auto w-full px-6 py-8 pb-28">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#ECFDF5' }}>
-              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="#2FA37C" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+        <div className="flex-1 max-w-2xl mx-auto w-full px-8 py-10 pb-28">
+          <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+            <div style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
               </svg>
             </div>
-            <h2 className="text-xl font-bold mb-2" style={{ color: '#1F2A44' }}>Processing complete</h2>
-            <p className="text-gray-600 text-sm">15 line items extracted and matched automatically.</p>
-            <p className="text-gray-600 text-sm">3 line items need your review.</p>
+            <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#0D1840', marginBottom: '8px' }}>Processing complete</h2>
+            <p style={{ fontSize: '14px', color: '#6B7280' }}>15 line items extracted and matched automatically.</p>
+            <p style={{ fontSize: '14px', color: '#6B7280' }}>3 line items need your review.</p>
           </div>
 
           <div className="flex flex-col gap-3 mb-4">
             <Collapsible title="Matched automatically" count={15} defaultOpen={false}>
-              <p className="text-sm text-gray-500 mb-2">15 items across Office supplies, IT hardware, Software &amp; licences</p>
-              <div className="flex flex-col gap-1">
-                {['Office supplies — 9 items', 'IT hardware — 4 items', 'Software & licences — 2 items'].map(line => (
-                  <div key={line} className="text-sm text-gray-600 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: '#2FA37C' }} />
-                    {line}
-                  </div>
-                ))}
-              </div>
+              <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '10px' }}>15 items across Office supplies, IT hardware, Software &amp; licences</p>
+              {['Office supplies — 9 items', 'IT hardware — 4 items', 'Software & licences — 2 items'].map(line => (
+                <div key={line} className="flex items-center gap-2" style={{ fontSize: '13px', color: '#374151', marginBottom: '4px' }}>
+                  <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#1B3DBF', flexShrink: 0 }} />
+                  {line}
+                </div>
+              ))}
             </Collapsible>
 
             <Collapsible title="Needs your review" count={3} defaultOpen={true} accent>
               <div className="flex flex-col gap-2">
                 {[
-                  { desc: 'Fellowes Apex Shredder Bags', issue: 'Extraction unclear — unit price may be wrong', cat: 'Office supplies' },
-                  { desc: 'Avery L7160 Address Labels', issue: 'Low confidence match (72%) — please confirm', cat: 'Office supplies' },
-                  { desc: 'Scotch Magic Tape 19mm 8-pack', issue: 'No SpAC equivalent found', cat: 'Office supplies' },
+                  { desc: 'Fellowes Apex Shredder Bags', issue: 'Extraction unclear — unit price may be wrong' },
+                  { desc: 'Avery L7160 Address Labels', issue: 'Low confidence match (72%) — please confirm' },
+                  { desc: 'Scotch Magic Tape 19mm 8-pack', issue: 'No SpAC equivalent found' },
                 ].map(item => (
-                  <div key={item.desc} className="bg-white rounded-lg p-3 border border-amber-100">
-                    <p className="font-medium text-sm" style={{ color: '#1F2A44' }}>{item.desc}</p>
-                    <p className="text-xs mt-0.5" style={{ color: '#F59E0B' }}>{item.issue}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{item.cat}</p>
+                  <div key={item.desc} style={{ backgroundColor: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '8px', padding: '12px 14px' }}>
+                    <p style={{ fontSize: '13px', fontWeight: 600, color: '#0D1840', marginBottom: '2px' }}>{item.desc}</p>
+                    <p style={{ fontSize: '12px', color: '#D97706' }}>{item.issue}</p>
                   </div>
                 ))}
               </div>
             </Collapsible>
           </div>
 
-          <div className="rounded-xl p-4 border" style={{ backgroundColor: '#FFFBEB', borderColor: '#FDE68A' }}>
-            <p className="text-sm font-semibold mb-1" style={{ color: '#92400E' }}>⚠ File too coarse to use</p>
-            <p className="text-sm" style={{ color: '#92400E' }}>
+          <div style={{ backgroundColor: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '10px', padding: '14px 16px' }}>
+            <p style={{ fontSize: '13px', fontWeight: 600, color: '#92400E', marginBottom: '4px' }}>⚠ File too coarse to use</p>
+            <p style={{ fontSize: '13px', color: '#92400E' }}>
               The file for Facilities &amp; cleaning ("facilities_q3_summary.pdf") contains no line-level detail. Ask your supplier for an itemised invoice.
             </p>
           </div>
@@ -182,15 +174,16 @@ export default function Upload() {
       )}
 
       {subState === 'form' && (
-        <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white px-6 py-4 flex items-center justify-between">
-          <span className="text-sm text-gray-500">{uploadedCategories.length} of {selectedCats.length} uploaded</span>
+        <div className="fixed bottom-0 left-0 right-0 flex items-center justify-between px-8 py-4" style={{ backgroundColor: '#FFFFFF', borderTop: '1px solid #E2E5EF' }}>
+          <span style={{ fontSize: '13px', color: '#6B7280' }}>{uploadedCategories.length} of {selectedCats.length} uploaded</span>
           <button
             onClick={startProcessing}
             disabled={!canProcess}
-            className="px-6 py-2 rounded-lg text-white font-semibold text-sm"
             style={{
-              backgroundColor: canProcess ? '#2FA37C' : '#9CA3AF',
-              cursor: canProcess ? 'pointer' : 'not-allowed',
+              backgroundColor: canProcess ? '#1B3DBF' : '#E2E5EF',
+              color: canProcess ? '#FFFFFF' : '#9CA3AF',
+              border: 'none', borderRadius: '8px', padding: '10px 24px',
+              fontSize: '14px', fontWeight: 600, cursor: canProcess ? 'pointer' : 'not-allowed',
             }}
           >
             Process documents →
@@ -199,25 +192,24 @@ export default function Upload() {
       )}
 
       {subState === 'results' && (
-        <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white px-6 py-4 flex items-center justify-between">
+        <div className="fixed bottom-0 left-0 right-0 flex items-center justify-between px-8 py-4" style={{ backgroundColor: '#FFFFFF', borderTop: '1px solid #E2E5EF' }}>
           <div>
             {skipConfirm ? (
-              <span className="text-sm text-gray-600">
+              <span style={{ fontSize: '13px', color: '#374151' }}>
                 This may reduce accuracy. Confirm?{' '}
-                <button onClick={() => navigate('/status')} className="underline text-gray-800 font-medium">Yes</button>
+                <button onClick={() => navigate('/status')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, color: '#0D1840', textDecoration: 'underline', fontSize: '13px' }}>Yes</button>
                 {' / '}
-                <button onClick={() => setSkipConfirm(false)} className="underline text-gray-800 font-medium">Cancel</button>
+                <button onClick={() => setSkipConfirm(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, color: '#0D1840', textDecoration: 'underline', fontSize: '13px' }}>Cancel</button>
               </span>
             ) : (
-              <button onClick={() => setSkipConfirm(true)} className="text-sm text-gray-400 underline">
+              <button onClick={() => setSkipConfirm(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px', color: '#9CA3AF', textDecoration: 'underline' }}>
                 Skip and submit anyway
               </button>
             )}
           </div>
           <button
             onClick={() => navigate('/review')}
-            className="px-6 py-2 rounded-lg text-white font-semibold text-sm"
-            style={{ backgroundColor: '#2FA37C' }}
+            style={{ backgroundColor: '#1B3DBF', color: '#FFFFFF', border: 'none', borderRadius: '8px', padding: '10px 24px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
           >
             Review 3 items →
           </button>
@@ -230,20 +222,23 @@ export default function Upload() {
 function Collapsible({ title, count, defaultOpen, accent, children }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div className="rounded-xl overflow-hidden border" style={{ borderColor: accent ? '#FDE68A' : '#E2E8F0', backgroundColor: 'white' }}>
+    <div style={{ backgroundColor: '#FFFFFF', border: `1px solid ${accent ? '#FDE68A' : '#E2E5EF'}`, borderRadius: '10px', overflow: 'hidden' }}>
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between px-4 py-3 text-left"
+        className="w-full flex items-center justify-between"
+        style={{ padding: '14px 16px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
       >
         <div className="flex items-center gap-2">
-          <span className="font-semibold text-sm" style={{ color: '#1F2A44' }}>{title}</span>
-          <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: accent ? '#FEF3C7' : '#EDF3F9', color: accent ? '#92400E' : '#2FA37C' }}>
+          <span style={{ fontSize: '14px', fontWeight: 600, color: '#0D1840' }}>{title}</span>
+          <span style={{ fontSize: '12px', fontWeight: 600, padding: '2px 8px', borderRadius: '99px', backgroundColor: accent ? '#FEF3C7' : '#EEF1FB', color: accent ? '#92400E' : '#1B3DBF' }}>
             {count}
           </span>
         </div>
-        <span className="text-gray-400 text-sm">{open ? '▲' : '▼'}</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
       </button>
-      {open && <div className="px-4 pb-4">{children}</div>}
+      {open && <div style={{ padding: '0 16px 16px' }}>{children}</div>}
     </div>
   )
 }

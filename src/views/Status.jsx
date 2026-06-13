@@ -7,72 +7,73 @@ export default function Status() {
   const navigate = useNavigate()
   const { selectedCategories, setSelectedCategories, setUploadedCategories } = useApp()
 
+  const submittedCats = CATEGORIES.filter(c => selectedCategories.includes(c.id) && c.id !== 'facilities')
+  const facilitiesCat = CATEGORIES.find(c => c.id === 'facilities')
   const facilitiesSelected = selectedCategories.includes('facilities')
 
   function handleRestart() {
-    setSelectedCategories(['office', 'it', 'software', 'mobile'])
+    setSelectedCategories([])
     setUploadedCategories([])
     navigate('/')
   }
 
-  const submittedIds = selectedCategories.filter(id => id !== 'facilities')
-  const submittedCats = CATEGORIES.filter(c => submittedIds.includes(c.id))
-  const facilitiesCat = CATEGORIES.find(c => c.id === 'facilities')
-
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F8FAFC' }}>
-      <TopBar step="Submitted" />
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F0F2F7' }}>
+      <TopBar />
 
-      <div className="flex-1 flex flex-col items-center px-6 py-10">
-        <div className="w-full" style={{ maxWidth: '680px' }}>
-          <div className="text-center mb-10">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5" style={{ backgroundColor: '#ECFDF5' }}>
-              <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#2FA37C" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+      <div className="flex-1 flex flex-col items-center px-6 py-12">
+        <div style={{ width: '100%', maxWidth: '640px' }}>
+
+          <div style={{ backgroundColor: '#FFFFFF', borderRadius: '14px', border: '1px solid #E2E5EF', padding: '40px', textAlign: 'center', marginBottom: '24px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+            <div style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
               </svg>
             </div>
-            <h1 className="text-2xl font-bold mb-2" style={{ color: '#1F2A44' }}>Your documents have been submitted</h1>
-            <p className="text-gray-500 text-sm">
+            <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#0D1840', marginBottom: '10px' }}>
+              Your documents have been submitted
+            </h1>
+            <p style={{ fontSize: '14px', color: '#6B7280', lineHeight: 1.6 }}>
               SpAC will complete the review and send a savings estimate within 2 business days.
-            </p>
-            <p className="text-gray-500 text-sm">
-              We'll email <span className="font-medium text-gray-700">otto@hartmann.de</span> when it's ready.
+              <br />We'll email <span style={{ fontWeight: 600, color: '#374151' }}>otto@hartmann.de</span> when it's ready.
             </p>
           </div>
 
-          <div className="flex flex-col gap-3 mb-8">
-            {submittedCats.map(cat => (
-              <div key={cat.id} className="bg-white rounded-xl border border-gray-100 shadow-sm px-5 py-4 flex items-center gap-4">
-                <span className="text-2xl">{cat.icon}</span>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-semibold text-sm" style={{ color: '#1F2A44' }}>{cat.label}</span>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#ECFDF5', color: '#2FA37C' }}>Under review</span>
+          <div style={{ backgroundColor: '#FFFFFF', borderRadius: '14px', border: '1px solid #E2E5EF', overflow: 'hidden', marginBottom: '24px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #F3F4F6' }}>
+              <p style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#9CA3AF' }}>Submitted categories</p>
+            </div>
+            {submittedCats.map((cat, i) => (
+              <div key={cat.id} className="flex items-center gap-4" style={{ padding: '14px 20px', borderBottom: i < submittedCats.length - 1 ? '1px solid #F3F4F6' : undefined }}>
+                <span style={{ fontSize: '20px' }}>{cat.icon}</span>
+                <div style={{ flex: 1 }}>
+                  <div className="flex items-center gap-2" style={{ marginBottom: '2px' }}>
+                    <span style={{ fontSize: '14px', fontWeight: 600, color: '#0D1840' }}>{cat.label}</span>
+                    <span style={{ fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '99px', backgroundColor: '#EEF1FB', color: '#1B3DBF' }}>Under review</span>
                   </div>
-                  <p className="text-xs text-gray-400">Submitted 14 Jun 2026, 11:42</p>
+                  <p style={{ fontSize: '12px', color: '#9CA3AF' }}>Submitted 14 Jun 2026, 11:42</p>
                 </div>
               </div>
             ))}
-
             {facilitiesSelected && facilitiesCat && (
-              <div className="bg-white rounded-xl border border-amber-100 shadow-sm px-5 py-4 flex items-start gap-4">
-                <span className="text-2xl">{facilitiesCat.icon}</span>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-semibold text-sm" style={{ color: '#1F2A44' }}>{facilitiesCat.label}</span>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#FEF3C7', color: '#92400E' }}>File issue</span>
+              <div className="flex items-start gap-4" style={{ padding: '14px 20px', borderTop: '1px solid #F3F4F6' }}>
+                <span style={{ fontSize: '20px' }}>{facilitiesCat.icon}</span>
+                <div style={{ flex: 1 }}>
+                  <div className="flex items-center gap-2" style={{ marginBottom: '4px' }}>
+                    <span style={{ fontSize: '14px', fontWeight: 600, color: '#0D1840' }}>{facilitiesCat.label}</span>
+                    <span style={{ fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '99px', backgroundColor: '#FEF3C7', color: '#92400E' }}>File issue</span>
                   </div>
-                  <p className="text-xs text-gray-500 mb-1">Upload an itemised invoice to include this category</p>
-                  <button className="text-xs underline" style={{ color: '#1F2A44' }}>Upload new file ›</button>
+                  <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '6px' }}>Upload an itemised invoice to include this category</p>
+                  <button style={{ fontSize: '12px', color: '#1B3DBF', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 500 }}>Upload new file ›</button>
                 </div>
               </div>
             )}
           </div>
 
-          <div className="text-center">
+          <div style={{ textAlign: 'center' }}>
             <button
               onClick={handleRestart}
-              className="text-sm px-5 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+              style={{ fontSize: '13px', color: '#6B7280', background: 'none', border: '1px solid #E2E5EF', borderRadius: '8px', padding: '9px 20px', cursor: 'pointer', backgroundColor: '#FFFFFF' }}
             >
               ← Start a new analysis
             </button>
