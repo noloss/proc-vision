@@ -104,18 +104,21 @@ export default function Upload() {
                       <span style={{ fontSize: '13px', color: '#374151', fontWeight: 500 }}>{filename}</span>
                     </div>
                   ) : (
-                    <div style={{ border: '1.5px dashed #D1D5DB', borderRadius: '8px', padding: '20px', textAlign: 'center' }}>
-                      <p style={{ fontSize: '13px', color: '#9CA3AF', marginBottom: '2px' }}>Drop file here or browse</p>
-                      <p style={{ fontSize: '12px', color: '#C4C9D4' }}>PDF, Excel, Word accepted</p>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => markUploaded(cat.id)}
+                        style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', backgroundColor: '#1B3DBF', color: '#FFFFFF', border: 'none', borderRadius: '7px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        Add invoices
+                      </button>
+                      <button
+                        onClick={() => markUploaded(cat.id)}
+                        style={{ fontSize: '12px', color: '#9CA3AF', background: 'none', border: 'none', cursor: 'pointer', padding: '8px 4px', fontWeight: 500 }}
+                      >
+                        Use sample data →
+                      </button>
                     </div>
-                  )}
-                  {!uploaded && (
-                    <button
-                      onClick={() => markUploaded(cat.id)}
-                      style={{ marginTop: '10px', fontSize: '12px', color: '#1B3DBF', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 500 }}
-                    >
-                      Use sample data →
-                    </button>
                   )}
                 </div>
               )
