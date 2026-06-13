@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import TopBar from '../components/TopBar'
 import { CATEGORIES, SAMPLE_FILES } from '../data'
+import CategoryIcon from '../components/CategoryIcon'
 import { useApp } from '../App'
 
 const PROCESSING_MESSAGES = [
@@ -85,7 +86,7 @@ export default function Upload() {
                 <div key={cat.id} style={{ backgroundColor: '#FFFFFF', borderRadius: '10px', padding: '16px 20px', border: '1px solid #E2E5EF' }}>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <span style={{ fontSize: '20px' }}>{cat.icon}</span>
+                      <span style={{ color: '#6B7280' }}><CategoryIcon id={cat.id} size={18} /></span>
                       <span style={{ fontSize: '14px', fontWeight: 600, color: '#0D1840' }}>{cat.label}</span>
                     </div>
                     {uploaded ? (

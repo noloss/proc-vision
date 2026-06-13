@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import TopBar from '../components/TopBar'
+import CategoryIcon from '../components/CategoryIcon'
 import { CATEGORIES } from '../data'
 import { useApp } from '../App'
 
@@ -24,36 +25,49 @@ export default function CategorySelect() {
         <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#0D1840', marginBottom: '6px' }}>
           Select spend categories
         </h1>
-        <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '32px' }}>
+        <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '28px' }}>
           Choose the categories you want to include. You can add more later.
         </p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {CATEGORIES.map(cat => {
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E5EF', overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+          {CATEGORIES.map((cat, i) => {
             const selected = selectedCategories.includes(cat.id)
             return (
               <button
                 key={cat.id}
                 onClick={() => toggle(cat.id)}
-                className="relative text-left transition-all focus:outline-none"
                 style={{
-                  backgroundColor: '#FFFFFF',
-                  border: selected ? '2px solid #1B3DBF' : '2px solid transparent',
-                  borderRadius: '10px',
-                  padding: '16px',
-                  boxShadow: selected ? '0 0 0 3px #EEF1FB' : '0 1px 3px rgba(0,0,0,0.06)',
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '14px',
+                  padding: '14px 20px',
+                  backgroundColor: selected ? '#F5F7FF' : '#FFFFFF',
+                  borderLeft: selected ? '3px solid #1B3DBF' : '3px solid transparent',
+                  borderTop: 'none',
+                  borderRight: 'none',
+                  borderBottom: i < CATEGORIES.length - 1 ? '1px solid #F3F4F6' : 'none',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'background-color 0.1s',
                 }}
+                onMouseEnter={e => { if (!selected) e.currentTarget.style.backgroundColor = '#FAFAFA' }}
+                onMouseLeave={e => { if (!selected) e.currentTarget.style.backgroundColor = '#FFFFFF' }}
               >
-                {selected && (
-                  <div className="absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: '#1B3DBF' }}>
-                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                      <path d="M1 4l2.5 2.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                <span style={{ color: selected ? '#1B3DBF' : '#6B7280', flexShrink: 0 }}>
+                  <CategoryIcon id={cat.id} size={18} />
+                </span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '14px', fontWeight: selected ? 600 : 500, color: selected ? '#1B3DBF' : '#0D1840' }}>
+                    {cat.label}
                   </div>
+                  <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '1px' }}>{cat.desc}</div>
+                </div>
+                {selected && (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B3DBF" strokeWidth="2.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
+                  </svg>
                 )}
-                <div style={{ fontSize: '24px', marginBottom: '8px' }}>{cat.icon}</div>
-                <div style={{ fontSize: '14px', fontWeight: 600, color: '#0D1840', marginBottom: '2px' }}>{cat.label}</div>
-                <div style={{ fontSize: '12px', color: '#9CA3AF' }}>{cat.desc}</div>
               </button>
             )
           })}
@@ -72,11 +86,8 @@ export default function CategorySelect() {
           style={{
             backgroundColor: selectedCategories.length === 0 ? '#E2E5EF' : '#1B3DBF',
             color: selectedCategories.length === 0 ? '#9CA3AF' : '#FFFFFF',
-            border: 'none',
-            borderRadius: '8px',
-            padding: '10px 24px',
-            fontSize: '14px',
-            fontWeight: 600,
+            border: 'none', borderRadius: '8px', padding: '10px 24px',
+            fontSize: '14px', fontWeight: 600,
             cursor: selectedCategories.length === 0 ? 'not-allowed' : 'pointer',
           }}
         >

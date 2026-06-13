@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import TopBar from '../components/TopBar'
 import { CATEGORIES } from '../data'
+import CategoryIcon from '../components/CategoryIcon'
 import { useApp } from '../App'
 
 export default function Status() {
@@ -24,7 +25,7 @@ export default function Status() {
       <div className="flex-1 flex flex-col items-center px-6 py-12">
         <div style={{ width: '100%', maxWidth: '640px' }}>
 
-          <div style={{ backgroundColor: '#FFFFFF', borderRadius: '14px', border: '1px solid #E2E5EF', padding: '40px', textAlign: 'center', marginBottom: '24px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+          <div style={{ backgroundColor: '#FFFFFF', borderRadius: '14px', border: '1px solid #E2E5EF', padding: '40px', textAlign: 'center', marginBottom: '20px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
             <div style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
@@ -33,19 +34,26 @@ export default function Status() {
             <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#0D1840', marginBottom: '10px' }}>
               Your documents have been submitted
             </h1>
-            <p style={{ fontSize: '14px', color: '#6B7280', lineHeight: 1.6 }}>
+            <p style={{ fontSize: '14px', color: '#6B7280', lineHeight: 1.6, marginBottom: '28px' }}>
               SpAC will complete the review and send a savings estimate within 2 business days.
-              <br />We'll email <span style={{ fontWeight: 600, color: '#374151' }}>otto@hartmann.de</span> when it's ready.
+              We'll email <span style={{ fontWeight: 600, color: '#374151' }}>otto@hartmann.de</span> when it's ready.
             </p>
+            <button
+              onClick={handleRestart}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '11px 24px', backgroundColor: '#1B3DBF', color: '#FFFFFF', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              Start a new analysis
+            </button>
           </div>
 
-          <div style={{ backgroundColor: '#FFFFFF', borderRadius: '14px', border: '1px solid #E2E5EF', overflow: 'hidden', marginBottom: '24px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #F3F4F6' }}>
-              <p style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#9CA3AF' }}>Submitted categories</p>
+          <div style={{ backgroundColor: '#FFFFFF', borderRadius: '14px', border: '1px solid #E2E5EF', overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+            <div style={{ padding: '14px 20px', borderBottom: '1px solid #F3F4F6' }}>
+              <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#9CA3AF' }}>Submitted categories</p>
             </div>
             {submittedCats.map((cat, i) => (
-              <div key={cat.id} className="flex items-center gap-4" style={{ padding: '14px 20px', borderBottom: i < submittedCats.length - 1 ? '1px solid #F3F4F6' : undefined }}>
-                <span style={{ fontSize: '20px' }}>{cat.icon}</span>
+              <div key={cat.id} className="flex items-center gap-4" style={{ padding: '14px 20px', borderBottom: i < submittedCats.length - 1 || facilitiesSelected ? '1px solid #F3F4F6' : undefined }}>
+                <span style={{ color: '#6B7280' }}><CategoryIcon id={cat.id} size={20} /></span>
                 <div style={{ flex: 1 }}>
                   <div className="flex items-center gap-2" style={{ marginBottom: '2px' }}>
                     <span style={{ fontSize: '14px', fontWeight: 600, color: '#0D1840' }}>{cat.label}</span>
@@ -56,7 +64,7 @@ export default function Status() {
               </div>
             ))}
             {facilitiesSelected && facilitiesCat && (
-              <div className="flex items-start gap-4" style={{ padding: '14px 20px', borderTop: '1px solid #F3F4F6' }}>
+              <div className="flex items-start gap-4" style={{ padding: '14px 20px' }}>
                 <span style={{ fontSize: '20px' }}>{facilitiesCat.icon}</span>
                 <div style={{ flex: 1 }}>
                   <div className="flex items-center gap-2" style={{ marginBottom: '4px' }}>
@@ -70,14 +78,6 @@ export default function Status() {
             )}
           </div>
 
-          <div style={{ textAlign: 'center' }}>
-            <button
-              onClick={handleRestart}
-              style={{ fontSize: '13px', color: '#6B7280', background: 'none', border: '1px solid #E2E5EF', borderRadius: '8px', padding: '9px 20px', cursor: 'pointer', backgroundColor: '#FFFFFF' }}
-            >
-              ← Start a new analysis
-            </button>
-          </div>
         </div>
       </div>
     </div>
