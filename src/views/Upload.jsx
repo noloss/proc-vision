@@ -57,7 +57,7 @@ export default function Upload() {
     }
   }, [subState])
 
-  const canProcess = uploadedCategories.length >= 2
+  const canProcess = uploadedCategories.length >= 1
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F8FAFC' }}>
